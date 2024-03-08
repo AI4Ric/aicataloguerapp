@@ -1,0 +1,49 @@
+# aicataloguer app
+
+## Privacy Policy
+
+**Effective Date: 7 March 2024**
+
+Welcome to the aicataloguer app, a dedicated mobile application designed to facilitate the process of capturing and renaming product images for cataloging purposes. This Privacy Policy details our commitment to protecting your privacy and informs you about the types of information we collect, how it's used, and your rights regarding your data when you use our app.
+
+### 1. Overview
+
+The aicataloguer app is a standalone mobile application that assists users in capturing photos of their products and renaming these images according to a specific naming structure. This app is designed to simplify the process of preparing images for catalog generation, which can be further utilized with our separate online service, aicataloguer.com. It's important to note that the aicataloguer app operates independently and does not connect to or interact with the aicataloguer.com service.
+
+### 2. Data Collection
+
+The aicataloguer app limits data collection strictly to the functionality required for its operation:
+
+- **Images**: The app accesses your device's camera to capture images of products. These images are then renamed based on your predefined settings within the app. All images are stored locally on your device, and the app does not retain or have access to these images once they are captured.
+
+### 3. Data Use
+
+The sole purpose of data collection within the aicataloguer app is to enable the functionality of capturing and renaming images for personal cataloging efforts. The app does not use this data for any other purposes.
+
+### 4. Data Sharing
+
+No data collected by the aicataloguer app is shared with third parties. The app functions offline, ensuring that all data, including images, remain solely on your device without transmission to external parties or services.
+
+### 5. Data Security
+
+We prioritize your data's security. Given the app's offline functionality, your data is safeguarded against external risks typically associated with online connectivity.
+
+### 6. User Rights
+
+You maintain complete control over your data within the aicataloguer app. This includes full authority to manage, delete, or modify the images captured and stored on your device at any time.
+
+### 7. Contact Information
+
+Should you have any inquiries or concerns regarding this Privacy Policy or the treatment of your data by the aicataloguer app, please reach out to us at admin@irishaicreative.com.
+
+### 8. Policy Updates
+
+We may update this Privacy Policy to reflect changes in our data practices. Such updates will be communicated through version updates of the aicataloguer app. We encourage you to review the Privacy Policy periodically to stay informed of any changes.
+
+### 9. Compliance with Laws
+
+The aicataloguer app is committed to full compliance with applicable privacy and data protection laws in the jurisdictions where it is used.
+
+**Conclusion**
+
+By using the aicataloguer app, you acknowledge and consent to the practices described in this Privacy Policy. We are dedicated to responsibly managing and protecting your data in alignment with this policy.
