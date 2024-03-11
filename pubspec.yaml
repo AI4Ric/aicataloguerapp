@@ -42,6 +42,8 @@ dependencies:
   flutter_native_splash: ^2.3.11
   flutter_exif_rotation: ^0.5.1
   flutter_markdown: ^0.6.20
+  permission_handler: ^11.3.0
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:

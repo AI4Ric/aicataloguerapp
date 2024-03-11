@@ -1,5 +1,29 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+Future<bool> _checkCameraPermission() async {
+  var status = await Permission.camera.status;
+  if (!status.isGranted) {
+    final result = await Permission.camera.request();
+    return result == PermissionStatus.granted;
+  }
+  return true;
+}
+
+Future<void> _openCamera(BuildContext context) async {
+  if (await _checkCameraPermission()) {
+    // Permissions are granted, open the camera screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CameraScreen()),
+    );
+  } else {
+    // Handle the case where permission was denied
+    // You might want to show an alert or some other UI to inform the user
+  }
+}
+
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -35,6 +59,7 @@ class _CameraScreenState extends State<CameraScreen> {
       firstCamera,
       // Define the resolution to use.
       ResolutionPreset.veryHigh,
+      imageFormatGroup: ImageFormatGroup.yuv420,
     );
 
     // Next, initialize the controller. This returns a Future.

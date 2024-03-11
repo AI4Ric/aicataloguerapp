@@ -8,6 +8,9 @@ import 'package:path/path.dart' as path;
 import 'package:flutter/services.dart';
 import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
+import 'dart:typed_data';
 
 
 void main() {
@@ -34,7 +37,17 @@ class ImageList extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearImages() {
+  void clearImages() async {
+    if (images != null){
+      for (XFile image in images!) {
+        try {
+          File file = File(image.path);
+          await file.delete();
+        } catch (e) {
+          print("Error deleting image: ${image.path}, $e");
+        }
+      }
+    }
     images = [];
     notifyListeners();
   }
@@ -604,18 +617,29 @@ Widget buildSaveButton(BuildContext context, ImageList imageList, FieldSelector 
         for (int i = 0; i < imageList.images!.length; i++) {
           final image = imageList.images![i];
 
-          File rotatedImage = await FlutterExifRotation.rotateImage(path: image.path);
-
-          final byteData = await image.readAsBytes();
-          String lotNumber = fieldSelector.lotController.text.isEmpty ? "000" : fieldSelector.lotController.text;
-          String vendorNumber = fieldSelector.vendorController.text.isEmpty ? "9999" : fieldSelector.vendorController.text;
-          String originalFileName = path.basenameWithoutExtension(rotatedImage.path);
-          String customFileName = "${lotNumber}_C$vendorNumber${i == 1 ? '_2' : ''}_$originalFileName";
-          final result = await ImageGallerySaver.saveImage(
-            byteData,
-            name: customFileName,
-          );
-          print(result);
+          try {
+            File rotatedImage = await FlutterExifRotation.rotateImage(path: image.path);
+            final byteData = await image.readAsBytes();
+            String lotNumber = fieldSelector.lotController.text.isEmpty ? "000" : fieldSelector.lotController.text;
+            String vendorNumber = fieldSelector.vendorController.text.isEmpty ? "9999" : fieldSelector.vendorController.text;
+            String originalFileName = path.basenameWithoutExtension(rotatedImage.path);
+            String customFileName = "${lotNumber}_C$vendorNumber${i == 1 ? '_2' : ''}_$originalFileName.jpg";
+            print("Rotated image path:");
+            print(image.path);
+            if (Platform.isIOS) {
+              print("Saving on IOS");
+              File savedFile = await saveImageToFile(byteData, customFileName);
+              await rotatedImage.delete();
+            } else if (Platform.isAndroid) {
+              print("Saving on android");
+              final result = await ImageGallerySaver.saveImage(
+                byteData,
+                name: customFileName,
+              );
+            }
+          } catch (e) {
+            print("An error ocurred while saving the image: $e");
+          }
         }
 
         if (fieldSelector.autoIncrement) {
@@ -632,6 +656,22 @@ Widget buildSaveButton(BuildContext context, ImageList imageList, FieldSelector 
       ),
     ),
   );
+}
+
+Future<File> saveImageToFile(Uint8List imageData, String imageName) async {
+  // Get the directory to save the image
+  final directory = await getApplicationDocumentsDirectory();
+
+  // Create a file path with your custom file name
+  final imagePath = '${directory.path}/$imageName';
+
+  // Create a file at the path
+  final imageFile = File(imagePath);
+
+  // Write the image data to the file
+  await imageFile.writeAsBytes(imageData);
+
+  return imageFile;
 }
 
 class KeyPad extends StatelessWidget {
