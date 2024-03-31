@@ -40,6 +40,9 @@ class _CameraScreenState extends State<CameraScreen> {
   CameraController? _controller;
   Future<void>? _initializeControllerFuture;
   List<CameraDescription>? _cameras;
+  double _previewAspectRatio = 4 / 3;
+  List<String> aspectRatios = ['3:4', '9:16', '1:1'];
+  String selectedRatio = '3:4'; // Default aspect ratio
 
   @override
   void initState() {
@@ -115,12 +118,50 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
+  void _adjustCameraPreview(String selectedRatio) {
+    // Parse the selected aspect ratio
+    List<String> ratioParts = selectedRatio.split(':');
+    double aspectRatio = double.parse(ratioParts[0]) / double.parse(ratioParts[1]);
+
+    // Check the current orientation to adjust the aspect ratio if needed
+    var orientation = MediaQuery.of(context).orientation;
+    if (orientation == Orientation.landscape) {
+      // In landscape mode, we invert the aspect ratio if it's not square (1:1)
+      if (aspectRatio != 1.0) {
+        aspectRatio = 1 / aspectRatio;
+      }
+    }
+
+    // Update the state to reflect the new aspect ratio
+    // This assumes you have a state variable to hold the aspect ratio for the CameraPreview widget
+    setState(() {
+      _previewAspectRatio = aspectRatio;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Take Picture ${_picturesTaken + 1}'),
         actions: [
+          DropdownButton<String>(
+            value: selectedRatio,
+            items: aspectRatios.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedRatio = value!;
+                // Call a method to adjust the camera preview based on the new aspect ratio
+                _adjustCameraPreview(value);
+              });
+            },
+          ),
           IconButton(
             onPressed: _toggleFlash, 
             icon: Icon(_isFlashOn ? Icons.flash_on : Icons.flash_off),
@@ -134,7 +175,10 @@ class _CameraScreenState extends State<CameraScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             // If the Future is complete, display the preview.
-            return CameraPreview(_controller!);
+            return AspectRatio(
+              aspectRatio: _previewAspectRatio,
+              child: CameraPreview(_controller!),
+            );
           } else {
             // Otherwise, display a loading indicator.
             return const Center(child: CircularProgressIndicator());
