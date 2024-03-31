@@ -83,6 +83,21 @@ class _CameraScreenState extends State<CameraScreen> {
     super.dispose();
   }
 
+  bool _isFlashOn = false;
+  void _toggleFlash() async {
+    setState(() {
+      _isFlashOn = !_isFlashOn;
+    });
+
+    if (_controller != null) {
+      await _controller!.setFlashMode(
+        _isFlashOn ? FlashMode.torch : FlashMode.off,
+      );
+    }
+  }
+
+
+
   void _takePicture() async {
     if (_picturesTaken < 2) {
       // Assuming _controller is your CameraController
@@ -105,7 +120,13 @@ class _CameraScreenState extends State<CameraScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Take Picture ${_picturesTaken + 1}'),
-        ),
+        actions: [
+          IconButton(
+            onPressed: _toggleFlash, 
+            icon: Icon(_isFlashOn ? Icons.flash_on : Icons.flash_off),
+          ),
+        ],
+      ),
       // You must wait until the controller is initialized before displaying the camera preview.
       // Use a FutureBuilder to display a loading spinner until the controller has finished initializing.
       body: FutureBuilder<void>(
@@ -129,3 +150,4 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
 }
+

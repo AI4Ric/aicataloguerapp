@@ -86,7 +86,7 @@ Widget buildNumberButton(BuildContext context, String number) {
             appData.vendorController.text += number;
           }
         } else if (appData.selectedField == SelectedField.lot) {
-          if (appData.lotController.text.length < 3) {
+          if (appData.lotController.text.length < 4) {
             appData.lotController.text += number;
           }
         }
@@ -547,12 +547,21 @@ List<Widget> buildButtons(BuildContext context, ImageList imageList, FieldSelect
     else
       buildCameraButton(context),
     Expanded(
-      child: InkWell(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           if (fieldSelector.selectedField == SelectedField.vendor && fieldSelector.vendorController.text.isNotEmpty) {
             fieldSelector.vendorController.text = fieldSelector.vendorController.text.substring(0, fieldSelector.vendorController.text.length - 1);
           } else if (fieldSelector.selectedField == SelectedField.lot && fieldSelector.lotController.text.isNotEmpty) {
             fieldSelector.lotController.text = fieldSelector.lotController.text.substring(0, fieldSelector.lotController.text.length - 1);
+          }
+        },
+        onLongPress: () {
+          // Delete all text logic
+          if (fieldSelector.selectedField == SelectedField.vendor && fieldSelector.vendorController.text.isNotEmpty) {
+            fieldSelector.vendorController.text = '';
+          } else if (fieldSelector.selectedField == SelectedField.lot && fieldSelector.lotController.text.isNotEmpty) {
+            fieldSelector.lotController.text = '';
           }
         },
         child: Container(
@@ -623,7 +632,7 @@ Widget buildSaveButton(BuildContext context, ImageList imageList, FieldSelector 
             String lotNumber = fieldSelector.lotController.text.isEmpty ? "000" : fieldSelector.lotController.text;
             String vendorNumber = fieldSelector.vendorController.text.isEmpty ? "9999" : fieldSelector.vendorController.text;
             String originalFileName = path.basenameWithoutExtension(rotatedImage.path);
-            String customFileName = "${lotNumber}_C$vendorNumber${i == 1 ? '_2' : ''}_$originalFileName.jpg";
+            String customFileName = "${lotNumber}_C$vendorNumber${i == 1 ? '_2' : '_1'}_$originalFileName.jpg";
             print("Rotated image path:");
             print(image.path);
             if (Platform.isIOS) {
@@ -648,7 +657,12 @@ Widget buildSaveButton(BuildContext context, ImageList imageList, FieldSelector 
         }
 
         imageList.clearImages();
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Images saved successfully')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Images saved successfully'),
+            duration: Duration(milliseconds: 500),
+            ),
+          );
 
       },
       child: Container(
@@ -684,9 +698,9 @@ class KeyPad extends StatelessWidget {
         Expanded(
           child: Row(
             children: <Widget>[
-              buildNumberButton(context, '7'),
-              buildNumberButton(context, '8'),
-              buildNumberButton(context, '9'),
+              buildNumberButton(context, '1'),
+              buildNumberButton(context, '2'),
+              buildNumberButton(context, '3'),
             ],
           ),
         ),
@@ -702,9 +716,9 @@ class KeyPad extends StatelessWidget {
         Expanded(
           child: Row(
             children: <Widget>[
-              buildNumberButton(context, '1'),
-              buildNumberButton(context, '2'),
-              buildNumberButton(context, '3'),
+              buildNumberButton(context, '7'),
+              buildNumberButton(context, '8'),
+              buildNumberButton(context, '9'),
             ],
           ),
         ),
