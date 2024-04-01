@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
-import 'package:aicataloguer/test.dart'; 
+import 'package:aicataloguer/test.dart'; //camera_interface.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -660,7 +660,7 @@ Widget buildSaveButton(BuildContext context, ImageList imageList, FieldSelector 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Images saved successfully'),
-            duration: Duration(milliseconds: 500),
+            duration: Duration(milliseconds: 250),
             ),
           );
 

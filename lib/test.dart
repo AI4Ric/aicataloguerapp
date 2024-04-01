@@ -40,9 +40,10 @@ class _CameraScreenState extends State<CameraScreen> {
   CameraController? _controller;
   Future<void>? _initializeControllerFuture;
   List<CameraDescription>? _cameras;
-  double _previewAspectRatio = 4 / 3;
+  double _previewAspectRatio = 3 / 4;
   List<String> aspectRatios = ['3:4', '9:16', '1:1'];
   String selectedRatio = '3:4'; // Default aspect ratio
+  
 
   @override
   void initState() {
@@ -143,15 +144,24 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text('Take Picture ${_picturesTaken + 1}'),
+        title: Text('P ${_picturesTaken + 1}',
+        style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           DropdownButton<String>(
             value: selectedRatio,
+            dropdownColor: Colors.black,
             items: aspectRatios.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(
+                  value,
+                  style: TextStyle(color: Colors.white),
+                  ),
               );
             }).toList(),
             onChanged: (value) {
@@ -161,10 +171,11 @@ class _CameraScreenState extends State<CameraScreen> {
                 _adjustCameraPreview(value);
               });
             },
+            icon: Icon(Icons.arrow_drop_down, color: Colors.white),
           ),
           IconButton(
             onPressed: _toggleFlash, 
-            icon: Icon(_isFlashOn ? Icons.flash_on : Icons.flash_off),
+            icon: Icon(_isFlashOn ? Icons.flash_on : Icons.flash_off, color: Colors.white),
           ),
         ],
       ),
@@ -174,10 +185,11 @@ class _CameraScreenState extends State<CameraScreen> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return AspectRatio(
-              aspectRatio: _previewAspectRatio,
-              child: CameraPreview(_controller!),
+            return Center(
+              child: AspectRatio(
+                aspectRatio: _previewAspectRatio,
+                child: CameraPreview(_controller!),
+              ),
             );
           } else {
             // Otherwise, display a loading indicator.
@@ -189,6 +201,8 @@ class _CameraScreenState extends State<CameraScreen> {
         // Provide an onPressed callback.
         onPressed: _takePicture,
         child: const Icon(Icons.camera_alt),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
     );
   }
