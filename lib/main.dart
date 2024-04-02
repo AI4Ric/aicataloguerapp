@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
-import 'package:aicataloguer/test.dart'; //camera_interface.dart
+import 'package:aicataloguer/camera_interface.dart'; //test.dart
+import 'package:aicataloguer/single_camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -51,6 +52,14 @@ class ImageList extends ChangeNotifier {
     images = [];
     notifyListeners();
   }
+
+  void replaceImageAt(int index, XFile newImage) {
+    if (index >= 0 && index < images!.length) {
+      images![index] = newImage;
+      notifyListeners(); // Notify listeners to rebuild the UI with the new image
+    }
+  }
+
 }
 
 class FieldSelector extends ChangeNotifier {
@@ -292,48 +301,81 @@ class ImagesTags extends StatelessWidget {
 
 
 
-class ImagesPreview extends StatelessWidget{
+class ImagesPreview extends StatelessWidget {
   const ImagesPreview({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     final imageList = Provider.of<ImageList>(context);
     return Row(
       children: <Widget>[
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: imageList.images!.isNotEmpty
-              ? ClipRRect(
-                borderRadius: BorderRadius.circular(15.0),
-                child: Image.file(File(imageList.images![0].path)),
-              )
-              : Center(
-                child: Image.asset('assets/images/ImagePlaceholder.png'),
-              ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: imageList.images!.isNotEmpty
-              ? ClipRRect(
-                borderRadius: BorderRadius.circular(15.0),
-                child: Image.file(File(imageList.images![1].path)),
-              )
-              : Center(
-                child: Image.asset('assets/images/ImagePlaceholder.png'),
-              ),
-          ),
-        ),
+        _buildImageContainer(context, 0, imageList),
+        _buildImageContainer(context, 1, imageList),
       ],
     );
   }
+
+  Widget _buildImageContainer(BuildContext context, int index, ImageList imageList) {
+    return Expanded(
+      child: Stack(
+        alignment: Alignment.topRight, // Aligns the button to the top right corner of the stack
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: imageList.images!.length > index
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0),
+                    child: Center(
+                      child: Image.file(
+                        File(imageList.images![index].path),
+                        fit: BoxFit.cover,
+                      ),
+                    ), 
+                  )
+                : Center(
+                    child: Image.asset('assets/images/ImagePlaceholder.png'),
+                  ),
+          ),
+          if (imageList.images!.length > index)
+            Positioned( // Positions the button in the top right corner
+              top: 8,
+              right: 8,
+              child: InkWell(
+                onTap: () async {
+                  // Handle button tap, for example, remove the image from the list
+                  final XFile? newImage = await Navigator.push<XFile?>(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SingleCameraScreen(),
+                    ),
+                  );
+
+                  if (newImage != null) {
+                    imageList.replaceImageAt(index, newImage);
+                  }
+                },
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.red, // Button color
+                    shape: BoxShape.circle, // Makes the button circular
+                  ),
+                  child: Icon(
+                    Icons.repeat_sharp, // Icon inside the button, you can choose any icon
+                    size: 20, // Icon size
+                    color: Colors.white, // Icon color
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
+
 
 class VariablesBlock extends StatelessWidget {
   const VariablesBlock({super.key});

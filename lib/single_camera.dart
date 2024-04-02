@@ -16,7 +16,7 @@ Future<void> _openCamera(BuildContext context) async {
     // Permissions are granted, open the camera screen
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const CameraScreen()),
+      MaterialPageRoute(builder: (context) => const SingleCameraScreen()),
     );
   } else {
     // Handle the case where permission was denied
@@ -25,14 +25,14 @@ Future<void> _openCamera(BuildContext context) async {
 }
 
 
-class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key});
+class SingleCameraScreen extends StatefulWidget {
+  const SingleCameraScreen({super.key});
 
   @override
   _CameraScreenState createState() => _CameraScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
+class _CameraScreenState extends State<SingleCameraScreen> {
   int _picturesTaken = 0;
   List<XFile> _takenPictures = [];
 
@@ -99,18 +99,13 @@ class _CameraScreenState extends State<CameraScreen> {
 
 
   void _takePicture() async {
-    if (_picturesTaken < 2) {
-      // Assuming _controller is your CameraController
-      final image = await _controller?.takePicture();
-      _takenPictures.add(image!);
-
-      setState(() {
-        _picturesTaken++;
-      });
-
-      if (_picturesTaken == 2) {
-        // Once two pictures are taken, return to the main menu with the pictures
-        Navigator.pop(context, _takenPictures);
+    if (_controller != null) {
+      try {
+        final image = await _controller!.takePicture();
+        Navigator.pop(context, image); // Return the single XFile and pop the screen
+      } catch (e) {
+        // You might want to handle any errors that occur during picture taking
+        print("Error taking picture: $e");
       }
     }
   }
@@ -119,7 +114,7 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Take Picture ${_picturesTaken + 1}'),
+        title: Text('Update Picture'),
         actions: [
           IconButton(
             onPressed: _toggleFlash, 
