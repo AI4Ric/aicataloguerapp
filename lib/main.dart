@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
-import 'package:aicataloguer/camera_interface.dart'; //test.dart
-import 'package:aicataloguer/single_camera.dart';
+import 'package:aicataloguer/camera_interface.dart'; //camera_interface.dart CameraTest2
+import 'package:aicataloguer/single_camera.dart'; //single_camera
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
